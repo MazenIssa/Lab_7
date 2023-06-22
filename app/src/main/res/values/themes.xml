@@ -1,0 +1,11 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Lab_7" parent="Theme.Material3.DayNight">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">@color/my_light_primary</item>
+    </style>
+
+    <style name="Theme.Lab_7" parent="Base.Theme.Lab_7" />
+    <color name="my_light_primary">#ffffff</color>
+
+</resources>
