@@ -1,10 +1,9 @@
 package com.example.lab_7;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ListView listView;
     private CharacterListAdapter adapter;
     private ArrayList<String> characterNames;
 
@@ -32,36 +30,34 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        listView = findViewById(R.id.listView);
+        ListView listView = findViewById(R.id.listView);
         characterNames = new ArrayList<>();
         adapter = new CharacterListAdapter(characterNames);
 
         listView.setAdapter(adapter);
 
         FetchCharactersTask fetchCharactersTask = new FetchCharactersTask();
-        fetchCharactersTask.execute();
+        fetchCharactersTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String selectedCharacter = characterNames.get(position);
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedCharacter = characterNames.get(position);
 
-                FrameLayout frameLayout = findViewById(R.id.frameLayout);
-                if (frameLayout != null) {
-                    DetailsFragment detailsFragment = DetailsFragment.newInstance(selectedCharacter);
+            FrameLayout frameLayout = findViewById(R.id.frameLayout);
+            if (frameLayout != null) {
+                DetailsFragment detailsFragment = DetailsFragment.newInstance(selectedCharacter);
 
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.frameLayout, detailsFragment)
-                            .commit();
-                } else {
-                    Intent intent = new Intent(MainActivity.this, EmptyActivity.class);
-                    intent.putExtra("name", selectedCharacter);
-                    startActivity(intent);
-                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.frameLayout, detailsFragment)
+                        .commit();
+            } else {
+                Intent intent = new Intent(MainActivity.this, EmptyActivity.class);
+                intent.putExtra("name", selectedCharacter);
+                startActivity(intent);
             }
         });
     }
 
+    @SuppressLint("StaticFieldLeak")
     private class FetchCharactersTask extends AsyncTask<Void, Void, String> {
 
         @Override
